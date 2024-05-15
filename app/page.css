@@ -1,0 +1,49 @@
+.fill {
+    display: flex;
+}
+.fill img {
+    flex-shrink: 0;
+    /* height: 120px;
+    width: 250px; */
+    height: 100%;
+    width: 50%;
+}
+
+.Toy {
+    display: flex;
+}
+
+.Toy img {
+    /* margin-top: -50px; */
+
+    /* height: 120px;
+    width: 250px; */
+    height: 90%;
+    width: 90%;
+}
+
+.switch-rotate {
+    margin-top: 40%;
+    margin-left: 30%;
+    transform: scale(2.0);
+  }
+
+.text {
+    font-size: 5vh;
+    font-family: "Tahoma", Times, serif;
+    padding-left: 5px;
+}
+
+.light {
+    margin-top: -80px;
+    margin-bottom: 100px;
+}
+
+.temp {
+    align-items: center;
+}
+
+.rotate {
+    align-items: center;
+}
+  
