@@ -6,101 +6,160 @@ import { Box, ThemeProvider, createTheme } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import Slider from '@mui/material/Slider';
 import "./page.css"
-import RotatedSlider from './RotatedSlider';
-import MusicPlayerSlider from "./MusicPlayer";
 import RotateRightIcon from '@mui/icons-material/RotateRight';
 import BlockIcon from '@mui/icons-material/Block';
-import VerticalToggleButtons from "./verticaltogglebutton";
-
-
-const Logo = require('./funiki-logo.png');
-const Toy = require('./toy.png');
-// Define a custom theme
-const theme = createTheme({
-  palette: {
-    background: {
-      default: 'white',
-    },
-    primary: {
-      main: '#1C214A',
-      text: '#FEFEEB',
-    },
-  },
-});
-
-const label = { inputProps: { 'aria-label': 'Color switch demo' } };
-
-// Define the common styles for the papers
-const paperStyles = {
-  fontFamily: 'Arial Black',
-  height: 150,
-  borderRadius: 2,
-  boxShadow: 24,
-  '&:hover': {
-    boxShadow: 50,
-  },
-};
+import React, { useEffect, useState, useRef } from 'react';
+import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
+import Alert from '@mui/material/Alert';
+import MediaControlCard from "./MediaController";
 
 export default function Home() {
-  return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ display: 'flex', justifyContent: 'center', bgcolor: 'background.default', minHeight: '100vh' }}>
-        <Container maxWidth="sm" sx={{ bgcolor: 'background.default', padding: 0, margin: 0 }}>
-          <Grid container spacing={1}>
-            <Grid item xs={12} >
-                <Paper sx={{ ...paperStyles, height: 100, bgcolor: 'pink'}} className="fill">
-                <Image src={Logo} alt="Funiki Logo" />
-                </Paper>
-            </Grid>
-            <Grid item xs={4}>
-              <Paper
-                sx={{
-                  ...paperStyles,
-                  height: 317,
-                  backgroundImage: 'linear-gradient(to right, #FDF2DC, #FCE3C5)',
-                  display: 'flex', // Apply flexbox layout
-                  flexDirection: 'column', // Set flex direction to column
-                  justifyContent: 'center', // Center items vertically
-                  alignItems: 'center', // Center items horizontally
-                  padding: '10px',
-                }}
-              >
-                <Typography className="text light">LIGHT</Typography>
-                <Switch
-                  {...label}
-                  defaultChecked
-                  color="warning"
-                  sx={{ transform: "scale(4.5) rotate(-90deg)" }}
-                />
-              </Paper>
-            </Grid>
-            <Grid item xs={8} container spacing={1}>
-              <Grid item xs={12}>
-                <Paper sx={{ ...paperStyles, height: 230, backgroundImage: 'linear-gradient(to right, #FDF2DC, #FCE3C5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="Toy">
-                  <Grid item xs={9}>
-                  <Typography className="text rotate">ROTATE</Typography> 
-                  <Image src={Toy} alt="Toy" />
-                  </Grid>
-                  <Grid item xs={3}>
-                  <VerticalToggleButtons />
-                  </Grid>
-                </Paper>
-              </Grid>
-              <Grid item xs={12}>
-                <Paper sx={{ ...paperStyles, height: 100, backgroundImage: 'linear-gradient(to right, #FDF2DC, #FCE3C5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Typography className="text temp">TEMP: 36°C</Typography> 
-                </Paper>
-              </Grid>
-            </Grid>
-            <Grid item xs={12}>
-              <Paper sx={{ ...paperStyles, height: 300, backgroundImage: 'linear-gradient(to right, #FDF2DC, #FCE3C5)' }}>
-                <Typography className="text">SOUND</Typography> 
-                {/* <MusicPlayerSlider /> */}
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
-    </ThemeProvider>
-  );
-}
+    
+    const [position, setPosition] = useState(1); // State to store the current position of the cards
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const Logo = require('./funiki-logo.png');
+    const Toy = require('./toy.png');
+    const ToyPause = require('./toypause.png');
+
+
+
+    // useEffect(() => {
+    //     console.log(position)}
+    // , [position])
+  
+    useEffect(() => {
+      const handleScroll = (event) => {
+        if (event.deltaY > 0) {
+          setPosition((prevPosition) => (prevPosition === 5 ? 1 : prevPosition + 1)); // Move up
+        } else {
+          setPosition((prevPosition) => (prevPosition === 1 ? 5 : prevPosition - 1)); // Move down
+        }
+
+        
+      };
+  
+      window.addEventListener('wheel', handleScroll);
+      return () => {
+        window.removeEventListener('wheel', handleScroll);
+      };
+      
+    }, []); // Empty dependency array ensures the effect runs only once
+  
+    const getCardStyles = (index) => {
+      let adjustedPosition = position;
+      if (position === 5 && index === 1) {
+        adjustedPosition = 6; // Wrap around to position 1 when at position 5
+      } else if (position === 1 && index === 5) {
+        adjustedPosition = 0; // Wrap around to position 5 when at position 1
+      }
+      
+      const cardPosition = index - adjustedPosition;
+      let transform, opacity, visibility;
+  
+      if (cardPosition === 0) {
+        transform = 'translateY(0) scale(1)';
+        opacity = 1;
+        visibility = 'visible';
+      } else if (Math.abs(cardPosition) === 1) {
+        transform = `translateY(${cardPosition * 100}%) scale(0.7)`;
+        opacity = 0.4;
+        visibility = 'visible';
+      } else {
+        transform = 'translateY(-100%) scale(0.5)';
+        opacity = 0;
+        visibility = 'hidden';
+      }
+  
+      return {
+        transform,
+        opacity,
+        visibility
+      };
+    };
+
+    const paperStyles = {
+        fontFamily: 'Arial Black',
+        borderRadius: 10,
+        justifyContent: 'center', // Center items horizontally
+        boxShadow: 4,
+        transition: 'transform 0.5s ease', // Smooth sliding animation
+        '&:hover': {
+          boxShadow: 50,
+        },
+      };
+
+      
+  
+    return (
+      <div className="main">
+      {position ? (<Image src={Logo} width={150} alt="Funiki Logo" />) : <></> }
+      <div className="carousel">
+          <div className="card" style={getCardStyles(1)}>
+            <div className="card-label"> Alerts </div>
+            <Alert className='alert' severity="info">No disturbances detected</Alert>
+            <Alert className='alert' severity="warning">Baby crying 2 hrs ago</Alert>
+          </div>
+          <div className="card" style={getCardStyles(2)}>
+            <div className="card-label"> ✨ Light ✨</div>
+            <div className="card-text"> Wirelessly control the lighting intensity and color of the toy</div>
+            <Switch sx={{ transform: "scale(3.5)" }} defaultChecked color="secondary" />
+          </div>
+          <div className="card" style={getCardStyles(3)}>
+            <div className="card-label">  🗘 Rotation 🗘</div> 
+            {isPlaying ? (
+                    <DotLottiePlayer
+                      src="https://lottie.host/bb489335-1601-463e-883b-1f5fced327b9/kcP0nWpA5P.json"
+                      background="transparent"
+                      speed={1}
+                      style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}
+                      loop
+                      autoplay={isPlaying} // Play animation when isPlaying is true
+                    />
+                  ) : (
+                    <div className="paused">PAUSED</div>
+                        )}   
+
+                <BlockIcon sx={{
+                      width: '20%',
+                      height: '20%',
+                      color: '#551D62',
+                      mt: 20,
+                      '&:hover': {
+                        transform: 'scale(1.2)', // Enlarge on hover
+                      },
+                    }}
+                    onClick={() => {
+                      setIsPlaying(false)
+                    }} />
+
+                <RotateRightIcon sx={{
+                      width: '20%',
+                      height: '20%',
+                      color: '#551D62',
+                      '&:hover': {
+                        transform: 'scale(1.2)', // Enlarge on hover
+                      },
+                    }}
+                    onClick={() => {
+                      setIsPlaying(true)
+                    }} />       
+          </div>
+          <div className="card" style={getCardStyles(4)}>
+            <div className="card-label sound-text">  ♬ Sound ♬ </div>
+            <MediaControlCard />
+          </div>
+          <div className="card" style={getCardStyles(5)}>
+            <div className="card-label">  🌡 Temp 🌡 </div>
+            <div className="temp">  29°C </div>
+            <div className="card-text"> It's recommended that the best temperature for babies is between 20 to 22 degrees Celsius.</div>
+          </div>
+          <div className="card" style={getCardStyles(6)}>
+            <div className="card-label"> Alerts </div>
+            <Alert className='alert' severity="info">No disturbances detected</Alert>
+            <Alert className='alert' severity="warning">Baby crying 2 hrs ago</Alert>
+          </div>
+      </div>
+      </div>
+    );
+  };
