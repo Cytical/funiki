@@ -13,7 +13,7 @@ import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
 import Alert from '@mui/material/Alert';
 import MediaControlCard from "./MediaController";
 import data from "./utils/firebaseConfig";
-import {get, ref} from 'firebase/database';
+import {get, ref, set} from 'firebase/database';
 import {db} from './utils/firebaseConfig';
 
 export default function Home() {
@@ -22,11 +22,13 @@ export default function Home() {
     const [isPlaying, setIsPlaying] = useState(false);
 
     const Logo = require('./funiki-logo.png');
-    const Toy = require('./toy.png');
-    const ToyPause = require('./toypause.png');
+    // const Toy = require('./toy.png');
+    // const ToyPause = require('./toypause.png');
 
     const [heatIndex, setHeatIndex] = useState(0);
     const [ldr, setLdr] = useState(0);
+    const [brightness, setBrightness] = useState(30);
+    const [motorStep, setmotorStep] = useState(0);
 
     useEffect(() => {
       const heatRef = ref(db, 'Sensor/heatIndex_data')
@@ -40,6 +42,7 @@ export default function Home() {
       }).catch((error) => {
         console.log(error);
       });
+
       const ldrRef = ref(db, 'Sensor/ldr_data')
       get(ldrRef).then((snapshot) => {
         if (snapshot.exists()){
@@ -51,10 +54,36 @@ export default function Home() {
       }).catch((error) => {
         console.log(error);
       });
+
+      const brightnessRef = ref(db, 'Actuator/LED/brightness')
+      get(brightnessRef).then((snapshot) => {
+        if (snapshot.exists()){
+          const brightnessFetch = snapshot.val();
+          setBrightness(brightnessFetch);
+        } else {
+          console.log('No data available');
+        }
+      }).catch((error) => {
+        console.log(error);
+      });
+
+      const stepRef = ref(db, 'Actuator/Motor/step')
+      get(stepRef).then((snapshot) => {
+        if (snapshot.exists()){
+          const stepFetch = snapshot.val();
+          setmotorStep(stepFetch);
+        } else {
+          console.log('No data available');
+        }
+      }).catch((error) => {
+        console.log(error);
+      });
     }, []);
 
     console.log(`heatIndex: ${heatIndex}`);
     console.log(`ldr: ${ldr}`);
+    console.log(`brifght: ${brightness}`);
+    console.log(`step: ${motorStep}`);
     // useEffect(() => {
     //     console.log(position)}
     // , [position])
@@ -120,6 +149,35 @@ export default function Home() {
         },
       };
 
+      const handleBrightnessChange = (event, newValue) => {
+        setBrightness(newValue);
+        const brightnessRef = ref(db, 'Actuator/LED/brightness');
+        set(brightnessRef, newValue).catch((error) => {
+          console.log(error);
+        });
+      };
+
+      const handleMotorChange = (motorSwitch) => {
+        if (motorSwitch === 'on') {
+          setmotorStep(5);
+          const stepRef = ref(db, 'Actuator/Motor/step');
+          // console.log("ON")
+          set(stepRef, 5).catch((error) => {
+            console.log(error);
+          });
+        }
+        else {
+          // console.log("OFF")
+        setmotorStep(0);
+        const stepRef = ref(db, 'Actuator/Motor/step');
+        set(stepRef, 0).catch((error) => {
+          console.log(error);
+        });
+        }
+      };
+
+      
+
       
   
     return (
@@ -134,7 +192,15 @@ export default function Home() {
           <div className="card" style={getCardStyles(2)}>
             <div className="card-label"> ✨ Light ✨</div>
             <div className="card-text"> Wirelessly control the lighting intensity and color of the toy</div>
-            <Switch sx={{ transform: "scale(3.5)" }} defaultChecked color="secondary" />
+          
+                <Slider
+                  aria-label="Brightness"
+                  value={brightness}
+                  onChange={handleBrightnessChange}
+                  color="secondary"
+                  valueLabelDisplay="auto"
+                />
+                    
           </div>
           <div className="card" style={getCardStyles(3)}>
             <div className="card-label">  🗘 Rotation 🗘</div> 
@@ -163,6 +229,7 @@ export default function Home() {
                     }}
                     onClick={() => {
                       setIsPlaying(false)
+                      handleMotorChange("off")
                     }} />
 
                 <RotateRightIcon sx={{
@@ -175,15 +242,17 @@ export default function Home() {
                     }}
                     onClick={() => {
                       setIsPlaying(true)
+                      handleMotorChange("on")
                     }} />       
           </div>
           <div className="card" style={getCardStyles(4)}>
             <div className="card-label sound-text">  ♬ Sound ♬ </div>
-            <MediaControlCard />
+            {/* <MediaControlCard /> */}
+            <iframe height="200" src="https://www.youtube.com/embed/W-vBu2rf8TI?si=ruyWR9tC_TfSPgp6" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           </div>
           <div className="card" style={getCardStyles(5)}>
-            <div className="card-label">  🌡 Temp 🌡 </div>
-            <div className="temp">  {heatIndex}°C </div>
+            <div className="card-label">  🌡 Heat Index 🌡 </div>
+            <div className="temp">  {heatIndex.toFixed(1)}°C </div>
             <div className="card-text"> It's recommended that the best temperature for babies is between 20 to 22 degrees Celsius.</div>
           </div>
           <div className="card" style={getCardStyles(6)}>
