@@ -25,11 +25,12 @@ export default function Home() {
     const Toy = require('./toy.png');
     const ToyPause = require('./toypause.png');
 
-    const [heatIndex, setHeatIndex] = useState([]);
+    const [heatIndex, setHeatIndex] = useState(0);
+    const [ldr, setLdr] = useState(0);
 
     useEffect(() => {
-      const sensorRef = ref(db, 'Sensor/heatIndex_data')
-      get(sensorRef).then((snapshot) => {
+      const heatRef = ref(db, 'Sensor/heatIndex_data')
+      get(heatRef).then((snapshot) => {
         if (snapshot.exists()){
           const heatIndexFetch = snapshot.val();
           setHeatIndex(heatIndexFetch);
@@ -39,9 +40,21 @@ export default function Home() {
       }).catch((error) => {
         console.log(error);
       });
+      const ldrRef = ref(db, 'Sensor/ldr_data')
+      get(ldrRef).then((snapshot) => {
+        if (snapshot.exists()){
+          const ldrFetch = snapshot.val();
+          setLdr(ldrFetch);
+        } else {
+          console.log('No data available');
+        }
+      }).catch((error) => {
+        console.log(error);
+      });
     }, []);
 
     console.log(`heatIndex: ${heatIndex}`);
+    console.log(`ldr: ${ldr}`);
     // useEffect(() => {
     //     console.log(position)}
     // , [position])
@@ -169,7 +182,7 @@ export default function Home() {
           </div>
           <div className="card" style={getCardStyles(5)}>
             <div className="card-label">  🌡 Temp 🌡 </div>
-            <div className="temp">  29°C </div>
+            <div className="temp">  {heatIndex}°C </div>
             <div className="card-text"> It's recommended that the best temperature for babies is between 20 to 22 degrees Celsius.</div>
           </div>
           <div className="card" style={getCardStyles(6)}>
