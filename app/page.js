@@ -12,6 +12,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { DotLottiePlayer, Controls } from '@dotlottie/react-player';
 import Alert from '@mui/material/Alert';
 import MediaControlCard from "./MediaController";
+import data from "./utils/firebaseConfig";
+import {get, ref} from 'firebase/database';
+import {db} from './utils/firebaseConfig';
 
 export default function Home() {
     
@@ -22,8 +25,23 @@ export default function Home() {
     const Toy = require('./toy.png');
     const ToyPause = require('./toypause.png');
 
+    const [heatIndex, setHeatIndex] = useState([]);
 
+    useEffect(() => {
+      const sensorRef = ref(db, 'Sensor/heatIndex_data')
+      get(sensorRef).then((snapshot) => {
+        if (snapshot.exists()){
+          const heatIndexFetch = snapshot.val();
+          setHeatIndex(heatIndexFetch);
+        } else {
+          console.log('No data available');
+        }
+      }).catch((error) => {
+        console.log(error);
+      });
+    }, []);
 
+    console.log(`heatIndex: ${heatIndex}`);
     // useEffect(() => {
     //     console.log(position)}
     // , [position])
