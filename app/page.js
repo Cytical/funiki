@@ -96,7 +96,7 @@ export default function Home() {
       {position ? (<Image src={Logo} width={150} alt="Funiki Logo" />) : <></> }
       <div className="carousel">
           <div className="card" style={getCardStyles(1)}>
-            <div className="card-label"> Alerts </div>
+            <div className="card-label"> 🔔 Alerts 🔔 </div>
             <Alert className='alert' severity="info">No disturbances detected</Alert>
             <Alert className='alert' severity="warning">Baby crying 2 hrs ago</Alert>
           </div>
@@ -125,6 +125,7 @@ export default function Home() {
                       height: '20%',
                       color: '#551D62',
                       mt: 20,
+                      mr: 7,
                       '&:hover': {
                         transform: 'scale(1.2)', // Enlarge on hover
                       },
