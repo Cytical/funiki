@@ -253,7 +253,7 @@ export default function Home() {
           <div className="card" style={getCardStyles(5)}>
             <div className="card-label">  🌡 Heat Index 🌡 </div>
             <div className="temp">  {heatIndex.toFixed(1)}°C </div>
-            <div className="card-text"> It's recommended that the best temperature for babies is between 20 to 22 degrees Celsius.</div>
+            <div className="card-text"> It is recommended that the best temperature for babies is between 20 to 22 degrees Celsius.</div>
           </div>
           <div className="card" style={getCardStyles(6)}>
             <div className="card-label"> Alerts </div>
