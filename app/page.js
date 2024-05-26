@@ -90,21 +90,42 @@ export default function Home() {
   
     useEffect(() => {
       const handleScroll = (event) => {
-        if (event.deltaY > 0) {
-          setPosition((prevPosition) => (prevPosition === 5 ? 1 : prevPosition + 1)); // Move up
-        } else {
-          setPosition((prevPosition) => (prevPosition === 1 ? 5 : prevPosition - 1)); // Move down
-        }
+          if (event.deltaY > 0) {
+              setPosition((prevPosition) => (prevPosition === 5 ? 1 : prevPosition + 1)); // Move up
+          } else {
+              setPosition((prevPosition) => (prevPosition === 1 ? 5 : prevPosition - 1)); // Move down
+          }
+      };
 
-        
+      const handleTouchStart = (event) => {
+          const touchStartY = event.touches[0].clientY;
+          event.currentTarget.touchStartY = touchStartY;
       };
-  
+
+      const handleTouchMove = (event) => {
+          if (!event.currentTarget.touchStartY) return;
+          const touchEndY = event.touches[0].clientY;
+          const touchDeltaY = event.currentTarget.touchStartY - touchEndY;
+
+          if (touchDeltaY > 50) {
+              setPosition((prevPosition) => (prevPosition === 5 ? 1 : prevPosition + 1));
+              event.currentTarget.touchStartY = null;
+          } else if (touchDeltaY < -50) {
+              setPosition((prevPosition) => (prevPosition === 1 ? 5 : prevPosition - 1));
+              event.currentTarget.touchStartY = null;
+          }
+      };
+
       window.addEventListener('wheel', handleScroll);
+      window.addEventListener('touchstart', handleTouchStart);
+      window.addEventListener('touchmove', handleTouchMove);
+
       return () => {
-        window.removeEventListener('wheel', handleScroll);
+          window.removeEventListener('wheel', handleScroll);
+          window.removeEventListener('touchstart', handleTouchStart);
+          window.removeEventListener('touchmove', handleTouchMove);
       };
-      
-    }, []); // Empty dependency array ensures the effect runs only once
+  }, []);
   
     const getCardStyles = (index) => {
       let adjustedPosition = position;
