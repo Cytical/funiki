@@ -190,7 +190,7 @@ export default function Home() {
       };
 
       const handleBrightnessChange = (event, newValue) => {
-        setBrightness(newValue);
+        setBrightness(newValue * 2.5);
         const brightnessRef = ref(db, 'Actuator/LED/brightness');
         set(brightnessRef, newValue).catch((error) => {
           console.log(error);
@@ -218,8 +218,9 @@ export default function Home() {
 
       const handleColorChange = (newValue) => {
         setColor(newValue);
+        const updatedValue = parseInt(newValue.slice(1), 16)
         const colorRef = ref(db, 'Actuator/LED/color');
-        set(colorRef, newValue).catch((error) => {
+        set(colorRef, updatedValue).catch((error) => {
           console.log(error);
         });
       };
