@@ -199,10 +199,10 @@ export default function Home() {
 
       const handleMotorChange = (motorSwitch) => {
         if (motorSwitch === 'on') {
-          setmotorStep(5);
+          setmotorStep(15);
           const stepRef = ref(db, 'Actuator/Motor/step');
           // console.log("ON")
-          set(stepRef, 5).catch((error) => {
+          set(stepRef, 15).catch((error) => {
             console.log(error);
           });
         }
