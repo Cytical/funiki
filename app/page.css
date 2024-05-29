@@ -63,3 +63,32 @@ box-shadow: 5px 10px 18px #010101;
     font-size: 50px;
 }
 
+.lightslider {
+    margin-bottom: 7px;
+}
+
+.light-text {
+    margin-bottom: 20px;
+}
+
+.colorpicker {
+    color:white;
+    background-color: grey;
+    border-radius: 20px;
+    height: 21%;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.music-btn {
+    border-radius: 100px;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-right: 10px;
+    background-color: #551D62;
+}
+
+.music-btn:hover {
+    background-color: purple;
+}
