@@ -245,8 +245,8 @@ export default function Home() {
       <div className="carousel">
           <div className="card" style={getCardStyles(1)}>
             <div className="card-label"> 🔔 Alerts 🔔 </div>
-            { (ldr <= 700) && (heatIndex <= 35) && (heatIndex >= 16) ? <Alert className='alert' severity="success"> Room is in optimal condtion</Alert> : <> </>}
-            { ldr >= 700 ? <Alert className='alert' severity="info"> Room is too bright </Alert> : <> </>}
+            { (ldr <= 1200) && (heatIndex <= 35) && (heatIndex >= 16) ? <Alert className='alert' severity="success"> Room is in optimal condtion</Alert> : <> </>}
+            { ldr >= 1200 ? <Alert className='alert' severity="info"> Room is too bright </Alert> : <> </>}
             { heatIndex >= 35 ? <Alert className='alert' severity="info" > Room is too hot </Alert> : <> </>}
             { heatIndex <= 16 ? <Alert className='alert' severity="info"> Room is too cold </Alert> : <> </>}
             
