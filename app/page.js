@@ -190,7 +190,7 @@ export default function Home() {
       };
 
       const handleBrightnessChange = (event, newValue) => {
-        setBrightness(newValue);
+        setBrightness(newValue * 2.5);
         const brightnessRef = ref(db, 'Actuator/LED/brightness');
         set(brightnessRef, newValue).catch((error) => {
           console.log(error);
@@ -199,10 +199,10 @@ export default function Home() {
 
       const handleMotorChange = (motorSwitch) => {
         if (motorSwitch === 'on') {
-          setmotorStep(5);
+          setmotorStep(15);
           const stepRef = ref(db, 'Actuator/Motor/step');
           // console.log("ON")
-          set(stepRef, 5).catch((error) => {
+          set(stepRef, 15).catch((error) => {
             console.log(error);
           });
         }
@@ -218,8 +218,9 @@ export default function Home() {
 
       const handleColorChange = (newValue) => {
         setColor(newValue);
+        const updatedValue = parseInt(newValue.slice(1), 16)
         const colorRef = ref(db, 'Actuator/LED/color');
-        set(colorRef, newValue).catch((error) => {
+        set(colorRef, updatedValue).catch((error) => {
           console.log(error);
         });
       };
@@ -244,8 +245,8 @@ export default function Home() {
       <div className="carousel">
           <div className="card" style={getCardStyles(1)}>
             <div className="card-label"> 🔔 Alerts 🔔 </div>
-            { (ldr <= 2047) && (heatIndex <= 35) && (heatIndex >= 16) ? <Alert className='alert' severity="success"> Room is in optimal condtion</Alert> : <> </>}
-            { ldr >= 2047 ? <Alert className='alert' severity="info"> Room is too bright </Alert> : <> </>}
+            { (ldr <= 1200) && (heatIndex <= 35) && (heatIndex >= 16) ? <Alert className='alert' severity="success"> Room is in optimal condtion</Alert> : <> </>}
+            { ldr >= 1200 ? <Alert className='alert' severity="info"> Room is too bright </Alert> : <> </>}
             { heatIndex >= 35 ? <Alert className='alert' severity="info" > Room is too hot </Alert> : <> </>}
             { heatIndex <= 16 ? <Alert className='alert' severity="info"> Room is too cold </Alert> : <> </>}
             
