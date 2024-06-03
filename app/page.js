@@ -19,13 +19,13 @@ import { MuiColorInput } from 'mui-color-input';
 import Button from '@mui/material/Button';
 
 export default function Home() {
+
+  const Logo = require('./funiki-logo.png');
     
   const [position, setPosition] = useState(1); // State to store the current position of the cards
   const [isPlaying, setIsPlaying] = useState(false);
+ 
   const [music, setMusic] = useState(0);
-
-  const Logo = require('./funiki-logo.png');
-
   const [heatIndex, setHeatIndex] = useState(0);
   const [ldr, setLdr] = useState(0);
   const [brightness, setBrightness] = useState(30);
